@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 10 Math: Quadratic Equations & Functions</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #16a34a;
+            --error: #dc2626;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 { margin: 0 0 10px 0; color: var(--primary); }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary);
+        }
+
+        .stat-label { font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; margin-top: 5px; }
+
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover { background: var(--primary-hover); }
+
+        .hint-box {
+            background: #fffbeb;
+            border-left: 4px solid #d97706;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 0 6px 6px 0;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-weight: 600;
+            display: none;
+        }
+        .feedback.success { color: var(--success); display: block; }
+        .feedback.error { color: var(--error); display: block; }
+
+        .recommendations {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .recommendations h2 { color: var(--success); margin-top: 0; }
+        .recommendations ul { padding-left: 20px; }
+        .recommendations li { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Adaptive Mathematics Worksheet</h1>
+        <p style="color: var(--text-light); margin: 0;">Topic: Quadratic Equations & Functions (Grade 10)</p>
+    </header>
+
+    <div class="dashboard">
+        <div class="stat-card">
+            <div class="stat-label">Current Difficulty</div>
+            <div class="stat-value" id="diff-display">Mild (Level 1)</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Correct Streak</div>
+            <div class="stat-value" id="streak-display">0 / 3</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Score</div>
+            <div class="stat-value" id="score-display">0</div>
+        </div>
+    </div>
+
+    <div class="card" id="workspace">
+        <span class="badge" id="topic-badge">Factoring</span>
+        <div class="question-text" id="question-box">Loading question...</div>
+        
+        <div class="input-group">
+            <input type="text" id="answer-input" placeholder="Type your answer here..." autocomplete="off">
+            <button id="submit-btn" onclick="checkAnswer()">Submit</button>
+            <button id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+        </div>
+
+        <div class="feedback" id="feedback-box"></div>
+        <div class="hint-box" id="hint-box"></div>
+    </div>
+
+    <div class="recommendations" id="rec-box">
+        <h2>Practice Completed! 🎉</h2>
+        <p>Based on your performance, here is your personalized study recommendation roadmap:</p>
+        <ul id="rec-list"></ul>
+        <button onclick="restartPractice()" style="margin-top: 15px; background: var(--success);">Start Fresh Practice</button>
+    </div>
+</div>
+
+<script>
+    // Problem Bank categorized by levels and sub-topics
+    const problemBank = {
+        1: [ // Level 1: Mild (Basic Factoring & Root finding where a=1)
+            { q: "Solve for x: x² - 5x + 6 = 0. (Enter roots separated by a comma, e.g., 2,3)", a: ["2,3", "3,2"], topic: "Factoring (a=1)", hints: ["Find two numbers that multiply to 6 and add up to -5.", "The numbers are -2 and -3. So, the equation factors into (x - 2)(x - 3) = 0.", "Set each factor to zero: x - 2 = 0 and x - 3 = 0. Solve for x."] },
+            { q: "Find the roots of: x² + 4x - 12 = 0. (Enter roots separated by a comma)", a: ["2,-6", "-6,2"], topic: "Factoring (a=1)", hints: ["Find two numbers that multiply to -12 and add up to 4.", "The numbers are 6 and -2. This gives factors: (x + 6)(x - 2) = 0.", "Change the signs of your factors to get the roots: x = -6 and x = 2."] },
+            { q: "Identify the y-intercept of the quadratic function: f(x) = x² - 3x - 8", a: ["-8", "(0,-8)", "(0, -8)"], topic: "Quadratic Features", hints: ["The y-intercept occurs where the input x is equal to 0.", "Substitute x = 0 into the equation: 0² - 3(0) - 8.", "The constant term 'c' in standard form ax² + bx + c is always your y-intercept."] }
+        ],
+        2: [ // Level 2: Medium (Factoring where a>1, Vertex Form, Vertex coordinates)
+            { q: "Solve for x by factoring: 2x² + 5x - 3 = 0. (Enter roots separated by a comma)", a: ["0.5,-3", "1/2,-3", "-3,0.5", "-3,1/2"], topic: "Factoring (a>1)", hints: ["Use the AC method: Multiply a*c (2 * -3 = -6). Find factors of -6 that add up to 5.", "Split the middle term: 2x² + 6x - x - 3 = 0, then factor by grouping.", "The factored form is (2x - 1)(x + 3) = 0. Solve both equations for x."] },
+            { q: "Find the coordinates of the vertex for the function: f(x) = (x - 3)² + 4. Format as (x,y)", a: ["(3,4)", "(3, 4)", "3,4"], topic: "Vertex Form", hints: ["This function is in vertex form: f(x) = a(x - h)² + k, where (h, k) is the vertex.", "Look closely at the expression inside the parentheses (x - h). Since it's (x - 3), h is 3.", "The vertex is simply (h, k). Switch the sign inside the bracket, keep the sign outside."] }
+        ],
+        3: [ // Level 3: Spicy (Quadratic Formula, Discriminant nature of roots)
+            { q: "Calculate the discriminant to determine how many real solutions exist for: 3x² - 4x + 5 = 0.", a: ["0", "no real solutions", "none"], topic: "Discriminant", hints: ["The discriminant formula is D = b² - 4ac.", "Substitute your values: a = 3, b = -4, c = 5. Calculate (-4)² - 4(3)(5).", "D = 16 - 60 = -44. Since the discriminant is negative, how many real roots are there?"] },
+            { q: "Use the quadratic formula to solve: x² - 6x + 7 = 0. Round your answers to two decimal places (e.g., 1.45,4.55).", a: ["1.59,4.41", "4.41,1.59"], topic: "Quadratic Formula", hints: ["The quadratic formula is x = [-b ± √(b² - 4ac)] / 2a.", "Plug in a=1, b=-6, c=7. This simplifies to: [6 ± √(36 - 28)] / 2, which is [6 ± √8] / 2.", "Calculate 6 + √8 then divide by 2, and 6 - √8 then divide by 2. Round to 2 decimals."] }
+        ]
+    };
+
+    let currentLevel = 1;
+    let correctStreak = 0;
+    let totalScore = 0;
+    let wrongAttempts = 0;
+    let currentQuestionObj = null;
+    let topicTracking = {};
+
+    function loadQuestion() {
+        document.getElementById("answer-input").value = "";
+        document.getElementById("answer-input").disabled = false;
+        document.getElementById("submit-btn").style.display = "inline-block";
+        document.getElementById("next-btn").style.display = "none";
+        document.getElementById("feedback-box").className = "feedback";
+        document.getElementById("hint-box").style.display = "none";
+        wrongAttempts = 0;
+
+        const pool = problemBank[currentLevel];
+        if (!pool || pool.length === 0) {
+            endSession();
+            return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * pool.length);
+        currentQuestionObj = pool[randomIndex];
+
+        document.getElementById("question-box").innerHTML = currentQuestionObj.q;
+        document.getElementById("topic-badge").innerText = currentQuestionObj.topic;
+        updateDashboard();
+    }
+
+    function checkAnswer() {
+        const userInput = document.getElementById("answer-input").value.trim().replace(/\s+/g, '');
+        const feedbackBox = document.getElementById("feedback-box");
+        const hintBox = document.getElementById("hint-box");
+
+        if (currentQuestionObj.a.includes(userInput.toLowerCase())) {
+            feedbackBox.className = "feedback success";
+            feedbackBox.innerText = "Excellent! Correct answer.";
+            totalScore += (currentLevel * 10);
+            correctStreak++;
+            wrongAttempts = 0;
+
+            if (correctStreak >= 3 && currentLevel < 3) {
+                currentLevel++;
+                correctStreak = 0;
+                feedbackBox.innerText += ` Rank up! Moving up to Level ${currentLevel}!`;
+            }
+
+            document.getElementById("submit-btn").style.display = "none";
+            document.getElementById("next-btn").style.display = "inline-block";
+            document.getElementById("answer-input").disabled = true;
+        } else {
+            correctStreak = 0;
+            wrongAttempts++;
+            feedbackBox.className = "feedback error";
+            feedbackBox.innerText = "That's not quite right. Try again!";
+
+            const currentTopic = currentQuestionObj.topic;
+            topicTracking[currentTopic] = (topicTracking[currentTopic] || 0) + 1;
+
+            if (wrongAttempts <= currentQuestionObj.hints.length) {
+                hintBox.style.display = "block";
+                hintBox.innerHTML = `<strong>Hint level ${wrongAttempts}:</strong> ${currentQuestionObj.hints[wrongAttempts - 1]}`;
+            } else {
+                hintBox.innerHTML = `<strong>Final Hint:</strong> Review the structure! The correct expected pattern aligns to something like: ${currentQuestionObj.a[0]}`;
+            }
+        }
+        updateDashboard();
+    }
+
+    function nextQuestion() {
+        const pool = problemBank[currentLevel];
+        if(pool) {
+            const index = pool.indexOf(currentQuestionObj);
+            if (index > -1) pool.splice(index, 1);
+        }
+
+        if (problemBank[1].length === 0 && problemBank[2].length === 0 && problemBank[3].length === 0) {
+            endSession();
+        } else if (!problemBank[currentLevel] || problemBank[currentLevel].length === 0) {
+            if (currentLevel < 3) {
+                currentLevel++;
+                correctStreak = 0;
+                loadQuestion();
+            } else {
+                endSession();
+            }
+        } else {
+            loadQuestion();
+        }
+    }
+
+    function updateDashboard() {
+        const levelNames = { 1: "Mild (Level 1)", 2: "Medium (Level 2)", 3: "Spicy (Level 3)" };
+        document.getElementById("diff-display").innerText = levelNames[currentLevel];
+        document.getElementById("streak-display").innerText = `${correctStreak} / 3`;
+        document.getElementById("score-display").innerText = totalScore;
+    }
+
+    function endSession() {
+        document.getElementById("workspace").style.display = "none";
+        const recBox = document.getElementById("rec-box");
+        const recList = document.getElementById("rec-list");
+        recBox.style.display = "block";
+        recList.innerHTML = "";
+
+        const uniqueStruggledTopics = Object.keys(topicTracking);
+
+        if (uniqueStruggledTopics.length === 0) {
+            recList.innerHTML = "<li><strong>Flawless Mastery!</strong> You showed strong core mechanics in all items today. Try expanding challenges into higher polynomial synthetic transformations!</li>";
+        } else {
+            uniqueStruggledTopics.forEach(topic => {
+                let resources = "";
+                if(topic.includes("Factoring")) {
+                    resources = "Review structural factoring schemas where product coefficients match 'ac' groupings.";
+                } else if(topic.includes("Vertex")) {
+                    resources = "Practice shifting standard forms into perfect square vertex forms: a(x-h)² + k.";
+                } else if(topic.includes("Formula") || topic.includes("Discriminant")) {
+                    resources = "Re-evaluate precision with radical operations and square roots of negative outputs.";
+                }
+                recList.innerHTML += `<li><strong>${topic}</strong>: Missed ${topicTracking[topic]} time(s). Action item: ${resources}</li>`;
+            });
+        }
+    }
+
+    function restartPractice() {
+        location.reload();
+    }
+
+    window.onload = loadQuestion;
+</script>
+
+</body>
+</html>
