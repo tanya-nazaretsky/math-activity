@@ -1,0 +1,1 @@
+“You are an experienced mathematics teacher. Create an HTML worksheet for Grade 10 students. The worksheet should automatically increase difficulty after three correct answers, provide progressively more explicit hints after repeated errors, and recommend additional practice for topics where the student struggled.”
